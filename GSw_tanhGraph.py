@@ -7,15 +7,15 @@ F, k =  0.046, 0.064 #(Stripes) #0.028, 0.064 (Dots) #0.010, 0.046 (Dynamic) #0.
 N = 200
 L = 200
 dx = L / N
-height = 5
+height = 3
 dy = dx
-n_steps =  200 #10000 #Using 300 for video. 
+n_steps =  400 #10000 #Using 300 for video. 
 # p1 = 50. #normally what I use
 # p2 = 150
 
-p1 = 60
+p1 = 50
 p2 = 200-p1
-s = 1 #controls the shappness of the tanh function - keep s = 0.1  for normal use. 
+s = .1 #controls the shappness of the tanh function - keep s = 0.1  for normal use. 
 x = np.linspace(0,L,N,endpoint=False)
 
 scale = 0.16

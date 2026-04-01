@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 N = 200
-n_steps = 100 
+n_steps = 400 
 
 def dot_product(a, b):
     return a[0]*b[0] + a[1]*b[1]
@@ -66,7 +66,7 @@ def run_simulation(seed):
 
 
 if __name__=='__main__':
-    num_simulations = 50
+    num_simulations = 5 #run 50 simulations and average the results to get a smoother curve.
     seeds = np.arange(num_simulations)
 
     with Pool(cpu_count()-1) as pool:
