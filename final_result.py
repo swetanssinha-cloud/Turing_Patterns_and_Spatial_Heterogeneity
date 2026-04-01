@@ -66,7 +66,7 @@ def run_simulation(seed):
 
 
 if __name__=='__main__':
-    num_simulations = 5 #run 50 simulations and average the results to get a smoother curve.
+    num_simulations = 50 #run 50 simulations and average the results to get a smoother curve.
     seeds = np.arange(num_simulations)
 
     with Pool(cpu_count()-1) as pool:
