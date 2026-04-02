@@ -46,7 +46,7 @@ def run_simulation(seed):
 
     np.random.seed(seed)
 
-    if seed % 25 == 0: #I want to keep the value at 10 - because I will be running 500 sims eventually
+    if seed % 5 == 0: #I want to keep the value at 10 - because I will be running 500 sims eventually
         print(f"Simulation {seed} finished")
 
 
@@ -70,7 +70,7 @@ def run_simulation(seed):
 
 
 if __name__=='__main__':
-    num_simulations = 50 #run 500 simulations and average the results to get a smoother curve.
+    num_simulations = 100 #run 500 simulations and average the results to get a smoother curve.
     seeds = np.arange(num_simulations)
 
     with Pool(cpu_count()-2) as pool:
