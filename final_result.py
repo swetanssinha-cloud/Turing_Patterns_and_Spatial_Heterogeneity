@@ -73,7 +73,7 @@ if __name__=='__main__':
     num_simulations = 100 #run 500 simulations and average the results to get a smoother curve.
     seeds = np.arange(num_simulations)
 
-    with Pool(cpu_count()-2) as pool:
+    with Pool(cpu_count()-1) as pool:
         results = pool.map(run_simulation, seeds)
 
         results = np.array(results)
