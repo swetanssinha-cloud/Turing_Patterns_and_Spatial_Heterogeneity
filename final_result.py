@@ -38,6 +38,7 @@ def solve_for_theta(dVx, dVy):
 
     theta = theta * (180/np.pi) #convert to degrees
     mean_theta_column = np.mean(theta, axis = 0)
+
     return mean_theta_column
 
 
@@ -77,8 +78,14 @@ if __name__=='__main__':
         results = pool.map(run_simulation, seeds)
 
         results = np.array(results)
+        theta_to_plot = np.zeros((len(x),))
 
-        mean_theta = np.mean(results, axis=0)
+
+        for i in range(0, len(results)):
+            theta_to_plot[i] = np.mean(results[i:i+20])
+
+
+        mean_theta = np.mean(theta_to_plot, axis=0)
         plt.plot(x, mean_theta)
         plt.xlabel('X')
         plt.ylabel('Mean Theta (degrees)')
