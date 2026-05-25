@@ -90,7 +90,10 @@ if __name__=='__main__':
         plt.xlabel('X')
         plt.ylabel('Mean Theta (degrees)')
         plt.title('Mean Theta vs X')
+        plt.savefig('/Users/Shared/Brandeis Coding/Functions/Final/Turring_Patterns/mean_theta.png', dpi=300, bbox_inches='tight')
         plt.show()
+
+        
 
 
 
