@@ -78,11 +78,25 @@ if __name__=='__main__':
         results = pool.map(run_simulation, seeds)
 
         results = np.array(results)
-        theta_to_plot = np.zeros((len(x),))
+
+        window_size = 20
+        n_runs = results.shape[0]
+        if n_runs >= window_size:
+            n_windows = n_runs - window_size + 1
+            theta_to_plot = np.zeros((n_windows, results.shape[1]))
+            for i in range(n_windows):
+                theta_to_plot[i] = results[i:i+window_size].mean(axis=0)
+            mean_theta = theta_to_plot.mean(axis=0)   # average the windowed curves
+        else:
+            # fewer runs than window -> just average all runs
+            mean_theta = results.mean(axis=0)
+
+            
+        # theta_to_plot = np.zeros((len(x),))
 
 
-        for i in range(0, len(results)):
-            theta_to_plot[i] = np.mean(results[i:i+20])
+        # for i in range(0, len(results)):
+        #     theta_to_plot[i] = np.mean(results[i:i+20])
 
 
         mean_theta = np.mean(theta_to_plot, axis=0)
