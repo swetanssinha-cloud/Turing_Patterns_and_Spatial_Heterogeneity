@@ -95,52 +95,96 @@ def run_simulation(seed, Du, Dv, dx, dt, solver, first_derivative, F, k):
 
 
 if __name__=='__main__':
-    '''changes'''
-    p_values = [30,40,50,60,70]
-    seeds = np.arange(num_simulations) #chat suggestion
+
+    p_values = [30, 40, 50, 60, 70]
+    seeds = np.arange(num_simulations)
     F = model.F
     k = model.k
     solver = model.solver
     first_derivative = model.first_derivative
 
-    plt.figure(figsize=(8,6))
-
-
+    plt.figure(figsize=(8, 6))
     for p1 in p_values:
         params = model.init_params(p1)
         Du = params['Du']; Dv = params['Dv']; dx = params['dx']; dt = params['dt']; x = params['x']
-    '''changes'''
 
-    args = [(int(s), Du, Dv, dx, dt, solver, first_derivative, F, k) for s in seeds] #chat suggestion
+        # build list of argument tuples for starmap (one tuple per simulation)
+        args = [(int(s), Du, Dv, dx, dt, solver, first_derivative, F, k) for s in seeds]
 
-    
-    with Pool(cpu_count()-1) as pool:
-        results = pool.map(run_simulation, args)
+        with Pool(max(1, cpu_count()-1)) as pool:
+            # use starmap so each tuple is unpacked into run_simulation(...)
+            results = pool.starmap(run_simulation, args)
 
-        results = np.array(results)
+        results = np.array(results)  # shape (num_simulations, len(x))
 
+        # window smoothing / average
         window_size = 20
-        n_runs = results.shape[0]
-        if n_runs >= window_size:
-            n_windows = n_runs - window_size + 1
+        if results.shape[0] >= window_size:
+            n_windows = results.shape[0] - window_size + 1
             theta_to_plot = np.zeros((n_windows, results.shape[1]))
             for i in range(n_windows):
                 theta_to_plot[i] = results[i:i+window_size].mean(axis=0)
-            mean_theta = theta_to_plot.mean(axis=0)   # average the windowed curves
+            mean_theta = theta_to_plot.mean(axis=0)
         else:
-            # fewer runs than window -> just average all runs
             mean_theta = results.mean(axis=0)
 
-
-        mean_theta = np.mean(theta_to_plot, axis=0)
         plt.plot(x, mean_theta, label=f"p1={p1}")
-
 
     plt.xlabel('X')
     plt.ylabel('Mean Theta (degrees)')
     plt.title('Mean Theta vs X')
+    plt.legend()
     plt.savefig('/Users/Shared/Brandeis Coding/Functions/Final/Turring_Patterns/mean_theta.png', dpi=300, bbox_inches='tight')
     plt.show()
+
+    '''what I had before is below'''
+    # '''changes'''
+    # p_values = [30,40,50,60,70]
+    # seeds = np.arange(num_simulations) #chat suggestion
+    # F = model.F
+    # k = model.k
+    # solver = model.solver
+    # first_derivative = model.first_derivative
+
+    # plt.figure(figsize=(8,6))
+
+
+    # for p1 in p_values:
+    #     params = model.init_params(p1)
+    #     Du = params['Du']; Dv = params['Dv']; dx = params['dx']; dt = params['dt']; x = params['x']
+    # '''changes'''
+
+    # args = [(int(s), Du, Dv, dx, dt, solver, first_derivative, F, k) for s in seeds] #chat suggestion
+
+
+    # with Pool(cpu_count()-1) as pool:
+    #     results = pool.map(run_simulation, args)
+
+    #     results = np.array(results)
+
+    #     window_size = 20
+    #     n_runs = results.shape[0]
+    #     if n_runs >= window_size:
+    #         n_windows = n_runs - window_size + 1
+    #         theta_to_plot = np.zeros((n_windows, results.shape[1]))
+    #         for i in range(n_windows):
+    #             theta_to_plot[i] = results[i:i+window_size].mean(axis=0)
+    #         mean_theta = theta_to_plot.mean(axis=0)   # average the windowed curves
+    #     else:
+    #         # fewer runs than window -> just average all runs
+    #         mean_theta = results.mean(axis=0)
+
+
+    #     mean_theta = np.mean(theta_to_plot, axis=0)
+    #     plt.plot(x, mean_theta, label=f"p1={p1}")
+
+
+    # plt.xlabel('X')
+    # plt.ylabel('Mean Theta (degrees)')
+    # plt.title('Mean Theta vs X')
+    # plt.savefig('/Users/Shared/Brandeis Coding/Functions/Final/Turring_Patterns/mean_theta.png', dpi=300, bbox_inches='tight')
+    # plt.show()
+    
 
         
 
