@@ -1,13 +1,16 @@
 '''Multiple simulations'''
 
-from GSw_tanhGraph import solver, first_derivative,Du, Dv, F, k, dx, dt, x
 from multiprocessing import Pool, cpu_count
 import numpy as np
 import matplotlib.pyplot as plt
+import GSw_tanhGraph as model
 
 
-N = 200
+#N = 200
+N = model.N
 n_steps = 400 
+num_simulations = 100 #run 500 simulations and average the results to get a smoother curve.
+seeds = np.arange(num_simulations)
 
 def dot_product(a, b):
     return a[0]*b[0] + a[1]*b[1]
@@ -45,37 +48,70 @@ def solve_for_theta(dVx, dVy):
 
 def run_simulation(seed): 
 
-    np.random.seed(seed)
+    # np.random.seed(seed)
 
-    if seed % 5 == 0: #I want to keep the value at 10 - because I will be running 500 sims eventually
-        print(f"Simulation {seed} finished")
+    # if seed % 5 == 0: #I want to keep the value at 10 - because I will be running 500 sims eventually
+    #     print(f"Simulation {seed} finished")
 
 
-    U = np.ones((N,N))
-    V = np.zeros((N,N))
+    # U = np.ones((N,N))
+    # V = np.zeros((N,N))
+    # r = 20
+    # U[N//2 - r:N//2+r, N//2 - r: N//2 + r] = 0.75 #orginally was 0.50
+    # V[N//2 - r:N//2+r, N//2 - r: N//2 + r] = 0.50 #orginally was 0.25
+    # U += 0.05 * np.random.rand(N,N)
+    # V += 0.05 * np.random.rand(N,N)
+
+
+    # for i in range(n_steps):
+    #     for _ in range(100):
+    #         U, V = solver(U, V, Du, Dv, F, k, dx, dt)
+
+    # dVx = first_derivative(V, 1)
+    # dVy = first_derivative(V, 0)
+
+    '''what chat'''
+    np.random.seed(int(seed))
+    if seed % 5 == 0:
+        print(f"Simulation {seed} started")
+    U = np.ones((N, N))
+    V = np.zeros((N, N))
     r = 20
-    U[N//2 - r:N//2+r, N//2 - r: N//2 + r] = 0.75 #orginally was 0.50
-    V[N//2 - r:N//2+r, N//2 - r: N//2 + r] = 0.50 #orginally was 0.25
-    U += 0.05 * np.random.rand(N,N)
-    V += 0.05 * np.random.rand(N,N)
-
-
+    U[N//2 - r:N//2 + r, N//2 - r:N//2 + r] = 0.75
+    V[N//2 - r:N//2 + r, N//2 - r:N//2 + r] = 0.50
+    U += 0.05 * np.random.rand(N, N)
+    V += 0.05 * np.random.rand(N, N)
     for i in range(n_steps):
         for _ in range(100):
             U, V = solver(U, V, Du, Dv, F, k, dx, dt)
-
     dVx = first_derivative(V, 1)
     dVy = first_derivative(V, 0)
-
     return solve_for_theta(dVx, dVy)
+
+    '''what chat said'''
+
 
 
 if __name__=='__main__':
-    num_simulations = 100 #run 500 simulations and average the results to get a smoother curve.
-    seeds = np.arange(num_simulations)
+    '''changes'''
+    p_values = [30,40,50,60,70]
+    seeds = np.arange(num_simulations) #chat suggestion
+    F = model.F
+    k = model.k
+    solver = model.solver
+    first_derivative = model.first_derivative
 
+    plt.figure(figsize=(8,6))
+
+
+    for p1 in p_values:
+        params = model.init_params(p1)
+        Du = params['Du']; Dv = params['Dv']; dx = params['dx']; dt = params['dt']; x = params['x']
+    '''changes'''
+
+    args = [(int(s), Du, Dv, dx, dt, solver, first_derivative, F, k) for s in seeds] #chat suggestion
     with Pool(cpu_count()-1) as pool:
-        results = pool.map(run_simulation, seeds)
+        results = pool.map(run_simulation, args)
 
         results = np.array(results)
 
@@ -91,21 +127,16 @@ if __name__=='__main__':
             # fewer runs than window -> just average all runs
             mean_theta = results.mean(axis=0)
 
-            
-        # theta_to_plot = np.zeros((len(x),))
-
-
-        # for i in range(0, len(results)):
-        #     theta_to_plot[i] = np.mean(results[i:i+20])
-
 
         mean_theta = np.mean(theta_to_plot, axis=0)
-        plt.plot(x, mean_theta)
-        plt.xlabel('X')
-        plt.ylabel('Mean Theta (degrees)')
-        plt.title('Mean Theta vs X')
-        plt.savefig('/Users/Shared/Brandeis Coding/Functions/Final/Turring_Patterns/mean_theta.png', dpi=300, bbox_inches='tight')
-        plt.show()
+        plt.plot(x, mean_theta, label=f"p1={p1}")
+
+
+    plt.xlabel('X')
+    plt.ylabel('Mean Theta (degrees)')
+    plt.title('Mean Theta vs X')
+    plt.savefig('/Users/Shared/Brandeis Coding/Functions/Final/Turring_Patterns/mean_theta.png', dpi=300, bbox_inches='tight')
+    plt.show()
 
         
 
