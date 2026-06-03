@@ -2,6 +2,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+'''Trying out the way to make p1 changable'''
+
+def init_params(p1_value):
+    p1 = p1_value
+    p2 = L - p1
+    x = np.linspace(0, L, N, endpoint=False)
+    input1 = s * (x - p1)
+    input2 = s * -1 * (x - p2)
+    tanfunc = scale * ((height - 1) / 2 * (2 - np.tanh(input1) - np.tanh(input2)) + 1)
+    Du = np.full((N, N), tanfunc)
+    Dv = (scale / 2) * np.ones_like(Du)
+    dx = L / N
+    dt = ((dx) ** 2) / (4 * Du.max()) - 0.1
+    return dict(p1=p1, p2=p2, x=x, tanfunc=tanfunc, Du=Du, Dv=Dv, dx=dx, dt=dt)
 
 F, k =  0.046, 0.064 #(Stripes) #0.028, 0.064 (Dots) #0.010, 0.046 (Dynamic) #0.037, 0.06 (Standard)
 N = 200
