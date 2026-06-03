@@ -46,7 +46,7 @@ def solve_for_theta(dVx, dVy):
 
 
 
-def run_simulation(seed): 
+def run_simulation(seed, Du, Dv, dx, dt, solver, first_derivative, F, k): 
 
     # np.random.seed(seed)
 
@@ -81,6 +81,8 @@ def run_simulation(seed):
     V[N//2 - r:N//2 + r, N//2 - r:N//2 + r] = 0.50
     U += 0.05 * np.random.rand(N, N)
     V += 0.05 * np.random.rand(N, N)
+
+
     for i in range(n_steps):
         for _ in range(100):
             U, V = solver(U, V, Du, Dv, F, k, dx, dt)
@@ -110,6 +112,8 @@ if __name__=='__main__':
     '''changes'''
 
     args = [(int(s), Du, Dv, dx, dt, solver, first_derivative, F, k) for s in seeds] #chat suggestion
+
+    
     with Pool(cpu_count()-1) as pool:
         results = pool.map(run_simulation, args)
 
