@@ -110,7 +110,7 @@ if __name__=='__main__':
     #for p1 in p_values:
     for s_val in s_values:
         #params = model.init_params(p1) for changing width of inner
-        params = model.init_params(p1=50, s_value=s_val) #for changing steepness of the tanh curve. I am keeping p1 constant at 50 for this.
+        params = model.init_params(50, s_value=s_val) #for changing steepness of the tanh curve. I am keeping p1 constant at 50 for this.
         Du = params['Du']; Dv = params['Dv']; dx = params['dx']; dt = params['dt']; x = params['x']
 
         # build list of argument tuples for starmap (one tuple per simulation)
