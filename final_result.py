@@ -133,13 +133,14 @@ if __name__=='__main__':
         else:
             mean_theta = results.mean(axis=0)
 
-        plt.plot(x, mean_theta, label=f"p1={p1}")
+        #plt.plot(x, mean_theta, label=f"p1={p1}")
+        plt.plot(x, mean_theta, label=f"s={s_val:.2f}")
 
     plt.xlabel('X')
     plt.ylabel('Mean Theta (degrees)')
     plt.title('Mean Theta vs X')
     plt.legend()
-    plt.savefig('/Users/Shared/Brandeis Coding/Functions/Final/Turring_Patterns/mean_theta_with sharpness_change.png', dpi=300, bbox_inches='tight')
+    plt.savefig('/Users/Shared/Brandeis Coding/Functions/Final/Turring_Patterns/mean_theta_with_sharpness_change.png', dpi=300, bbox_inches='tight')
     plt.show()
 
     '''what I had before is below'''
